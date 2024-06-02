@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sort and Search Algorithms</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    .container { max-width: 1000px; margin: 0 auto; }
+    button {
+      background-color: #2563eb;
+      color: #fff;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      display: inline-block;
+    }
+    button:hover { background-color: #1d4ed8; transform: scale(1.05); }
+    .output {
+      background-color: #a5b4fc;
+      border: 1px solid #93c5fd;
+      border-radius: 0.375rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 7rem;
+      width: 100%;
+    }
+    .output > :first-child { height: 7rem; padding: 0.5rem; font-size: 1.125rem; overflow-y: auto; }
+    .output > :last-child { height: 1.5rem; padding: 0rem 0.5rem; font-size: 0.75rem; background: #fff; }
+  </style>
+</head>
+<body class="bg-blue-50 min-h-screen flex flex-col justify-center items-center">
+  <div class="container">
+    <div class="flex flex-col items-start my-2">
+      <div class="text-3xl font-bold self-center self-justify-center">Generador de Array</div>
+      <button onclick="generateRandomArray()">Generar Array Aleatorio</button>
+    </div>
+    <div class="output">
+      <div id="randomArrayOutput"></div>
+      <div class="hidden"></div>
+    </div>
+    <div class="flex flex-col items-start my-2">
+      <h1 class="text-3xl font-bold self-center self-justify-center">Algoritmos de Ordenamiento</h1>
+      <button onclick="runAllSortingAlgorithms()">Ejecutar Todos los Algoritmos de Ordenamiento</button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div id="bubbleOutput" class="output">
+        <div></div>
+        <span></span>
+      </div>
+      <div id="quickOutput" class="output">
+        <div></div>
+        <span></span>
+      </div>
+      <div id="insertionOutput" class="output">
+        <div></div>
+        <span></span>
+      </div>
+    </div>
+    <div class="flex flex-col items-start my-2">
+      <div class="text-3xl font-bold self-center self-justify-center">Algoritmos de Búsqueda</div>
+      <button onclick="runAllSearchingAlgorithms()">Ejecutar Todos los Algoritmos de Búsqueda</button>
+    </div>
+    <div class="flex gap-4">
+      <div id="sequentialOutput" class="output">
+        <div id="sequentialSearchOutput"></div>
+        <span id="sequentialSearchTime"></span>
+      </div>
+      <div id="binaryOutput" class="output">
+        <div id="binarySearchOutput"></div>
+        <span id="binarySearchTime"></span>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+   
+      var element = document.querySelector("#bubbleOutput > div");
+    
+          var Module = {
+            print: (function () {
+                return (...args) => {
+                    var text = args.join(" ");
+                    element.innerText += text + "\n";
+                };
+            })(),
+        };
+
+        function runAllSearchingAlgorithms() {
+            if (arrayToSort.length === 0) {
+                alert("Por favor, genera un array aleatorio primero.");
+                return;
+            }
+            if (typeof Module._malloc !== "function") {
+                alert("Emscripten runtime is not ready");
+                return;
+            }
+            let target = parseInt(prompt("Ingrese el número a buscar:"));
+            let arrayPointer = Module._malloc(arrayToSort.length * 4);
+            for (let i = 0; i < arrayToSort.length; i++) {
+                Module.setValue(arrayPointer + i * 4, arrayToSort[i], "i32");
+            }
+            Module.ccall("runSearch", null, ["number", "number", "number"], [arrayToSort.length, arrayPointer, target]);
+            Module._free(arrayPointer);
+        }
+
+        var arrayToSort = [];
+        function generateRandomArray() {
+            arrayToSort = [];
+            for (var i = 0; i < 1000000; i++) {
+                arrayToSort.push(Math.floor(Math.random() * 10000000));
+            }
+            arrayToSort.sort((a, b) => a - b);
+            document.getElementById("randomArrayOutput").innerText = arrayToSort.join(", ");
+        }
+  </script>
+  <div id="salida"></div>
+  {{{ SCRIPT }}}
+</body>
+</html>
