@@ -25,51 +25,71 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      height: 7rem;
       width: 100%;
     }
-    .output > :first-child { height: 7rem; padding: 0.5rem; font-size: 1.125rem; overflow-y: auto; }
-    .output > :last-child { height: 1.5rem; padding: 0rem 0.5rem; font-size: 0.75rem; background: #fff; }
+    .output > div {padding: 0.5rem; font-size: 1.125rem; overflow-y: auto; overflow-x: hidden; }
+    .output.array > div { height: 7rem }
+    .output.sort > div { height: 14rem }
+    .output.search > div { height: 4rem }
+   
+    .output:not(.array)> :first-child { height: 1.5rem; padding: 0rem 0.5rem; background: #ffffff5d;text-align: center;font-weight: bold;}
+    .output > :last-child { height: 1.5rem; padding: 0rem 0.5rem; font-size: 0.75rem; background: #fff;}
+  
   </style>
 </head>
 <body class="bg-blue-50 min-h-screen flex flex-col justify-center items-center">
-  <div class="container">
-    <div class="flex flex-col items-start my-2">
-      <div class="text-3xl font-bold self-center self-justify-center">Generador de Array</div>
-      <button onclick="generateRandomArray()">Generar Array Aleatorio</button>
+  <div class="w-full px-6 pt-0 pb-1">
+    <div class="mb-2 w-full relative text-center">
+      <span class="text-3xl font-bold w-full ">Generador de Array</span>
+      
     </div>
-    <div class="output">
-      <div id="randomArrayOutput"></div>
-      <div class="hidden"></div>
+    <div class="flex gap-2">
+      <button class="w-52 h-34" onclick="generateRandomArray()">Generar Array Aleatorio</button>
+ 
+      <div class="output array">
+        <div id="randomArrayOutput" ></div>
+        <span id="msj"></span>
+    </div>  
+   </div>
+
+    <div class="my-2 w-full relative text-center">
+      <span class="text-3xl font-bold w-full ">Algoritmos de Ordenamiento</span>
     </div>
-    <div class="flex flex-col items-start my-2">
-      <h1 class="text-3xl font-bold self-center self-justify-center">Algoritmos de Ordenamiento</h1>
-      <button onclick="runAllSortingAlgorithms()">Ejecutar Todos los Algoritmos de Ordenamiento</button>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div id="bubbleOutput" class="output">
-        <div></div>
-        <span></span>
+
+    <div class="flex gap-2">
+    <button class="w-52 h-50" onclick="runAllSortingAlgorithms()">Ejecutar Todos los Algoritmos de Ordenamiento</button>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+      <div id="bubbleOutput" class="output sort">
+        <span>Ordenamiento de Burbuja</span>
+        <div id="bubbleSortOutput"></div>
+        <span id="bubbleSortTime"></span>
       </div>
-      <div id="quickOutput" class="output">
-        <div></div>
-        <span></span>
+      <div id="quickOutput" class="output sort">
+        <span>Ordenamiento Rápido</span>
+        <div id="quickSortOutput"></div>
+        <span id="quickSortTime"></span>
       </div>
-      <div id="insertionOutput" class="output">
-        <div></div>
-        <span></span>
+      <div id="insertionOutput" class="output sort">
+        <span>Ordenamiento por Inserción</span>
+        <div id="insertionSortOutput"></div>
+        <span id="insertionSortTime"></span>
       </div>
     </div>
-    <div class="flex flex-col items-start my-2">
-      <div class="text-3xl font-bold self-center self-justify-center">Algoritmos de Búsqueda</div>
-      <button onclick="runAllSearchingAlgorithms()">Ejecutar Todos los Algoritmos de Búsqueda</button>
+  </div>
+
+    <div class="my-2 w-full relative text-center">
+      <span class="text-3xl font-bold w-full ">Algoritmos de Búsqueda</span>
+  
     </div>
-    <div class="flex gap-4">
-      <div id="sequentialOutput" class="output">
-        <div id="sequentialSearchOutput"></div>
+    <div class="flex gap-2">
+      <button class="w-96 " onclick="runAllSearchingAlgorithms()">Ejecutar Todos los Algoritmos de Búsqueda</button>
+      <div id="sequentialOutput" class="output search">
+        <span>Busqueda Secuencial</span>
+        <div id="sequentialSearchOutput" ></div>
         <span id="sequentialSearchTime"></span>
       </div>
-      <div id="binaryOutput" class="output">
+      <div id="binaryOutput" class="output search">
+        <span>Busqueda Binaria</span>
         <div id="binarySearchOutput"></div>
         <span id="binarySearchTime"></span>
       </div>
@@ -77,18 +97,18 @@
   </div>
   <script type="text/javascript">
    
-      var element = document.querySelector("#bubbleOutput > div");
+      var element = document.getElementById("msj");
     
           var Module = {
             print: (function () {
                 return (...args) => {
                     var text = args.join(" ");
-                    element.innerText += text + "\n";
+                    element.innerText = text ;
                 };
             })(),
         };
 
-        function runAllSearchingAlgorithms() {
+        function runAllSortingAlgorithms() {
             if (arrayToSort.length === 0) {
                 alert("Por favor, genera un array aleatorio primero.");
                 return;
@@ -97,22 +117,49 @@
                 alert("Emscripten runtime is not ready");
                 return;
             }
-            let target = parseInt(prompt("Ingrese el número a buscar:"));
-            let arrayPointer = Module._malloc(arrayToSort.length * 4);
-            for (let i = 0; i < arrayToSort.length; i++) {
+            var arrayPointer = Module._malloc(arrayToSort.length * 4);
+            for (var i = 0; i < arrayToSort.length; i++) {
                 Module.setValue(arrayPointer + i * 4, arrayToSort[i], "i32");
             }
-            Module.ccall("runSearch", null, ["number", "number", "number"], [arrayToSort.length, arrayPointer, target]);
+            Module.ccall("runSort", null, ["number", "number"], [arrayToSort.length, arrayPointer]);
+            Module._free(arrayPointer);
+        }
+
+        function runAllSearchingAlgorithms() {
+            if (arrayToSearch.length === 0) {
+                alert("Por favor, genera un array aleatorio primero.");
+                return;
+            }
+            if (typeof Module._malloc !== "function") {
+                alert("Emscripten runtime is not ready");
+                return;
+            }
+            let target = parseInt(prompt("Ingrese el número a buscar:"));
+            if (isNaN(target)) {
+                return;
+            }
+
+            document.getElementById("sequentialSearchOutput").innerText = "Búsqueda secuencial: ";
+            document.getElementById("binarySearchOutput").innerText = "Búsqueda binaria: ";
+
+            let arrayPointer = Module._malloc(arrayToSearch.length * 4);
+            for (let i = 0; i < arrayToSearch.length; i++) {
+                Module.setValue(arrayPointer + i * 4, arrayToSearch[i], "i32");
+            }
+            Module.ccall("runSearch", null, ["number", "number", "number"], [arrayToSearch.length, arrayPointer, target]);
             Module._free(arrayPointer);
         }
 
         var arrayToSort = [];
+        var arrayToSearch = [];
         function generateRandomArray() {
             arrayToSort = [];
-            for (var i = 0; i < 1000000; i++) {
-                arrayToSort.push(Math.floor(Math.random() * 10000000));
+            for (var i = 0; i < 10000; i++) {
+                arrayToSort.push(Math.floor(Math.random() * 100000));
             }
-            arrayToSort.sort((a, b) => a - b);
+            arrayToSearch = arrayToSort.slice();
+           // arrayToSort.sort((a, b) => a - b);
+            arrayToSearch.sort((a, b) => a - b);
             document.getElementById("randomArrayOutput").innerText = arrayToSort.join(", ");
         }
   </script>

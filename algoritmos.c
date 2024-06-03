@@ -70,23 +70,26 @@ void quickSort(int arr[], int low, int high)
 int sequentialSearch(int arr[], int n, int x) {
     for (int i = 0; i < n; i++) {
         if (arr[i] == x) {
-            return i; // Return index of element if found
+            return i; 
         }
-       
+        emscripten_thread_sleep(100); 
     }
-    return -1; // Return -1 if element not found
+    return -1;
 }
+
 // Binary search
 int binarySearch(int arr[], int left, int right, int target) {
     if (right >= left) {
-       
         int mid = left + (right - left) / 2;
         if (arr[mid] == target) {
+            emscripten_thread_sleep(100); 
             return mid; // Return index of element if found
         }
         if (arr[mid] > target) {
+            emscripten_thread_sleep(100); 
             return binarySearch(arr, left, mid - 1, target);
         }
+        emscripten_thread_sleep(100); 
         return binarySearch(arr, mid + 1, right, target);
     }
     return -1; // Return -1 if element not found

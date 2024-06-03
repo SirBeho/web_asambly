@@ -1201,7 +1201,8 @@ function dbg(...args) {
 // === Body ===
 
 var ASM_CONSTS = {
-  68536: ($0, $1) => { var divId = UTF8ToString($0); var resultMessage = UTF8ToString($1); document.getElementById(divId).innerText = resultMessage; _free($1); }
+  68696: ($0, $1, $2, $3) => { var divId = UTF8ToString($0); var resultMessage = UTF8ToString($1); var tOutput = UTF8ToString($2); var timeMessage = UTF8ToString($3); document.getElementById(divId).innerText = resultMessage; document.getElementById(tOutput).innerText = timeMessage; _free($0); _free($1); _free($2); _free($3); },  
+ 68996: ($0, $1, $2, $3) => { var divId = UTF8ToString($0); var array = UTF8ToString($1); var tOutput = UTF8ToString($2); var timeMessage = UTF8ToString($3); document.getElementById(divId).innerText = array; document.getElementById(tOutput).innerText = timeMessage; _free($0); _free($1); _free($2); _free($3); }
 };
 
 // end include: preamble.js
@@ -2781,20 +2782,21 @@ function assignWasmImports() {
 }
 var wasmExports = createWasm();
 var ___wasm_call_ctors = createExportWrapper('__wasm_call_ctors', 0);
-var _free = Module['_free'] = createExportWrapper('free', 1);
 var _malloc = Module['_malloc'] = createExportWrapper('malloc', 1);
 var _runSearch = Module['_runSearch'] = createExportWrapper('runSearch', 3);
+var _runSort = Module['_runSort'] = createExportWrapper('runSort', 2);
 var _main = Module['_main'] = createExportWrapper('main', 2);
 var __emscripten_tls_init = createExportWrapper('_emscripten_tls_init', 0);
 var _pthread_self = () => (_pthread_self = wasmExports['pthread_self'])();
 var __emscripten_thread_init = createExportWrapper('_emscripten_thread_init', 6);
 var __emscripten_thread_crashed = createExportWrapper('_emscripten_thread_crashed', 0);
 var _fflush = createExportWrapper('fflush', 1);
-var _emscripten_main_runtime_thread_id = createExportWrapper('emscripten_main_runtime_thread_id', 0);
 var _emscripten_main_thread_process_queued_calls = createExportWrapper('emscripten_main_thread_process_queued_calls', 0);
-var __emscripten_run_on_main_thread_js = createExportWrapper('_emscripten_run_on_main_thread_js', 5);
+var _emscripten_main_runtime_thread_id = createExportWrapper('emscripten_main_runtime_thread_id', 0);
 var _emscripten_stack_get_base = () => (_emscripten_stack_get_base = wasmExports['emscripten_stack_get_base'])();
 var _emscripten_stack_get_end = () => (_emscripten_stack_get_end = wasmExports['emscripten_stack_get_end'])();
+var _free = Module['_free'] = createExportWrapper('free', 1);
+var __emscripten_run_on_main_thread_js = createExportWrapper('_emscripten_run_on_main_thread_js', 5);
 var __emscripten_thread_free_data = createExportWrapper('_emscripten_thread_free_data', 1);
 var __emscripten_thread_exit = createExportWrapper('_emscripten_thread_exit', 1);
 var __emscripten_check_mailbox = createExportWrapper('_emscripten_check_mailbox', 0);
